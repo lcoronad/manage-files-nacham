@@ -46,6 +46,10 @@ public class MovementFile implements Serializable {
     @JsonProperty
     @NotEmpty(message = "La entidad financiera no puede ser vacia")
     private String financialEntity;
+    
+    @JsonProperty
+    @NotEmpty(message = "El destino no puede ser vacio")
+    private String target;
 
 	public String getFileName() {
 		return fileName;
@@ -77,5 +81,13 @@ public class MovementFile implements Serializable {
 
 	public void setFinancialEntity(String financialEntity) {
 		this.financialEntity = financialEntity;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
 	}
 }

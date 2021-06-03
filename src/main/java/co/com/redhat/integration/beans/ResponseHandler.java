@@ -53,12 +53,12 @@ public class ResponseHandler {
 	public Object responseGetStateFile(Exchange exchange) {
 		ResponseGetFileState response = new ResponseGetFileState();
 		response.setCodigo("200");
-		response.setDescripcion("Ok");
 		
 		List<Map<String, String>> respuesta = (List) exchange.getIn().getBody();
 		SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
 		
 		if( !respuesta.isEmpty() ) {
+			response.setDescripcion("Ok");
 			List<MovementFile> movements = new ArrayList();
 			for( Map<String, String> registro : respuesta ) {
 				MovementFile movementFile = new MovementFile( );
@@ -66,12 +66,16 @@ public class ResponseHandler {
 				movementFile.setFileName(registro.get("FILE_NAME"));
 				movementFile.setFileState(registro.get("FILE_STATE"));
 				movementFile.setFinancialEntity(registro.get("FINANCIAL_ENTITY"));
+				movementFile.setTarget(registro.get("TARGET"));
 				
 				movements.add(movementFile);
 			}
 			response.setMovementFile(movements);
 			
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
+		}
+		else {
+			response.setDescripcion("La consulta no obtuvo resultados");
 		}
 		
 		return response;
@@ -86,12 +90,12 @@ public class ResponseHandler {
 	public Object responseGetFileList(Exchange exchange) {
 		ResponseGetFileState response = new ResponseGetFileState();
 		response.setCodigo("200");
-		response.setDescripcion("Ok");
 		
 		List<Map<String, String>> respuesta = (List) exchange.getIn().getBody();
 		SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
 		
 		if( !respuesta.isEmpty() ) {
+			response.setDescripcion("Ok");
 			List<MovementFile> movements = new ArrayList();
 			for( Map<String, String> registro : respuesta ) {
 				MovementFile movementFile = new MovementFile( );
@@ -99,12 +103,16 @@ public class ResponseHandler {
 				movementFile.setFileName(registro.get("FILE_NAME"));
 				movementFile.setFileState(registro.get("FILE_STATE"));
 				movementFile.setFinancialEntity(registro.get("FINANCIAL_ENTITY"));
+				movementFile.setTarget(registro.get("TARGET"));
 				
 				movements.add(movementFile);
 			}
 			response.setMovementFile(movements);
 			
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
+		}
+		else {
+			response.setDescripcion("La consulta no obtuvo resultados");
 		}
 		
 		return response;

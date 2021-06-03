@@ -70,10 +70,20 @@ public class SaveMovementFileRoute extends RouteBuilder {
         	.unmarshal(jsonDataFormat)
         	//Se validan los campos de entrada segun las anotacion del objeto request
         	.to("bean-validator://validatorFields")
-        		.log(LoggingLevel.INFO, logger , "| SaveMovementFileRoute | Message: se invoca el insert SQL con los valores fileName: ${body.fileName}, fileDate: ${body.fileDate}, fileState: ${body.fileState} y financialEntity: ${body.financialEntity}")
+        		.log(LoggingLevel.INFO, logger , "| SaveMovementFileRoute | Message: se invoca el insert SQL con los valores fileName: ${body.fileName}, fileDate: ${body.fileDate}, fileState: ${body.fileState}, financialEntity: ${body.financialEntity} y target: ${body.target}")
+        	//Se crean los headers para el insert parametrizado
+        	.setHeader("fileName")
+        		.simple("${body.fileName}")
+        	.setHeader("fileDate")
+        		.simple("${body.fileDate}")
+        	.setHeader("fileState")
+        		.simple("${body.fileState}")
+        	.setHeader("financialEntity")
+        		.simple("${body.financialEntity}")
+        	.setHeader("target")
+        		.simple("${body.target}")
         	//Se ejecuta la sentencia SQL
-        	.to("sql:insert into movements_files values(:#${body.fileName}, CAST ( :#${body.fileDate} AS DATE ), :#${body.fileState}, :#${body.financialEntity})?dataSource=#dataSourceFiles")
-        	//.to("sql:INSERT INTO MOVEMENTS_FILES VALUES(:#${body.fileName}, :#${body.fileDate}, :#${body.fileState}, :#${body.financialEntity})?dataSource=#dataSourceFiles")
+        	.to("sql:{{service.rest.insert.movement.file}}?dataSource=#dataSourceFiles")
         		.log(LoggingLevel.INFO, logger , "| SaveMovementFileRoute | Message: respuesta bd : ${body}")
         	//Se arma la respuesta
         	.bean(ResponseHandler.class, "response(${exchange})")
