@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>co.com.redhat.hackathon</groupId>
   <artifactId>manage-files-nacham</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>manage-files-nacham</name>
   
   <properties>
