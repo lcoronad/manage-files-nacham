@@ -1,0 +1,59 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: manage-files-nacham
+  name: manage-files-nacham
+spec:
+  replicas: 1
+  selector:
+    app: manage-files-nacham
+    deploymentconfig: manage-files-nacham
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: manage-files-nacham
+        deploymentconfig: manage-files-nacham
+    spec:
+      containers:
+        - name: manage-files-nacham
+          image: image-registry.openshift-image-registry.svc:5000/ach-mft-integration/manage-files-nacham:latest
+          env:
+            - name: SPRING_APPLICATION_JSON
+              value: '{"server":{"undertow":{"io-threads":10, "worker-threads":20 }}}'
+            - name: JAVA_OPTIONS
+              value: '-Xms640m -Xmx1024m -Dfile.encoding=ISO-8859-1'
+          envFrom:
+            - configMapRef:
+                name: configmap-manage-files-nacham
+            - secretRef:
+                name: secret-manage-files-nacham
+          readinessProbe:
+            httpGet:
+              path: /api/files-nacham/health-check
+              port: 8080
+              scheme: HTTP
+            failureThreshold: 3
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 120
+          livenessProbe:
+            httpGet:
+              path: /api/files-nacham/health-check
+              port: 8080
+              scheme: HTTP
+            failureThreshold: 2
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 120
+          resources:
+            limits:
+              cpu: 400m
+              memory: 1024Mi
+            requests:
+              cpu: 200m
+              memory: 640Mi
