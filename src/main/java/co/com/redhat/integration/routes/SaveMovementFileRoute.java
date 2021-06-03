@@ -72,8 +72,8 @@ public class SaveMovementFileRoute extends RouteBuilder {
         	.to("bean-validator://validatorFields")
         		.log(LoggingLevel.INFO, logger , "| SaveMovementFileRoute | Message: se invoca el insert SQL con los valores fileName: ${body.fileName}, fileDate: ${body.fileDate}, fileState: ${body.fileState} y financialEntity: ${body.financialEntity}")
         	//Se ejecuta la sentencia SQL
-        	//.to("sql:insert into movements_files values(:#${body.fileName}, CAST ( :#${body.fileDate} AS DATE ), :#${body.fileState}, :#${body.financialEntity})?dataSource=#dataSourceFiles")
-        	.to("sql:INSERT INTO MOVEMENTS_FILES VALUES(:#${body.fileName}, :#${body.fileDate}, :#${body.fileState}, :#${body.financialEntity})?dataSource=#dataSourceFiles")
+        	.to("sql:insert into movements_files values(:#${body.fileName}, CAST ( :#${body.fileDate} AS DATE ), :#${body.fileState}, :#${body.financialEntity})?dataSource=#dataSourceFiles")
+        	//.to("sql:INSERT INTO MOVEMENTS_FILES VALUES(:#${body.fileName}, :#${body.fileDate}, :#${body.fileState}, :#${body.financialEntity})?dataSource=#dataSourceFiles")
         		.log(LoggingLevel.INFO, logger , "| SaveMovementFileRoute | Message: respuesta bd : ${body}")
         	//Se arma la respuesta
         	.bean(ResponseHandler.class, "response(${exchange})")

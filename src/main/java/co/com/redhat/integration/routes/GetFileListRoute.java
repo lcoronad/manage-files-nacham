@@ -60,8 +60,8 @@ public class GetFileListRoute extends RouteBuilder {
         	.to("bean-validator://validatorFields")
         		.log(LoggingLevel.INFO, logger , " | GetFileListRoute | Message: se invoca el select SQL con los valores initFileDate: ${header.initFileDate}, endFileDate: ${header.endFileDate}")
         	//Se ejecuta la sentencia SQL
-        	//.to("sql:SELECT * FROM movements_files WHERE file_date >= CAST ( :#${header.initFileDate} AS DATE ) AND file_date <= CAST ( :#${header.endFileDate} AS DATE ) AND file_state='{{service.rest.state.final.movements}}'?dataSource=#dataSourceFiles")
-        	.to("sql:SELECT * FROM movements_files WHERE file_date >= :#${header.initFileDate} AND file_date <= :#${header.endFileDate} AND file_state='{{service.rest.state.final.movements}}'?dataSource=#dataSourceFiles")
+        	.to("sql:SELECT * FROM movements_files WHERE file_date >= CAST ( :#${header.initFileDate} AS DATE ) AND file_date <= CAST ( :#${header.endFileDate} AS DATE ) AND file_state='{{service.rest.state.final.movements}}'?dataSource=#dataSourceFiles")
+        	//.to("sql:SELECT * FROM movements_files WHERE file_date >= :#${header.initFileDate} AND file_date <= :#${header.endFileDate} AND file_state='{{service.rest.state.final.movements}}'?dataSource=#dataSourceFiles")
         		.log(LoggingLevel.INFO, logger , "| GetFileListRoute | Message: respuesta bd : ${body}")
         	//Se arma la respuesta
         	.bean(ResponseHandler.class, "responseGetFileList(${exchange})")

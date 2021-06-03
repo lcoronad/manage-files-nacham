@@ -60,8 +60,8 @@ public class GetStateFileRoute extends RouteBuilder {
         	.to("bean-validator://validatorFields")
         		.log(LoggingLevel.INFO, logger , " | GetStateFileRoute | Message: se invoca el select SQL con los valores initFileDate: ${header.initFileDate}, endFileDate: ${header.endFileDate} y financialEntity: ${header.financialEntity}")
         	//Se ejecuta la sentencia SQL
-        	//.to("sql:SELECT * FROM movements_files WHERE file_date >= CAST ( :#${header.initFileDate} AS DATE ) AND file_date <= CAST ( :#${header.endFileDate} AS DATE ) AND financial_entity = :#${header.financialEntity}?dataSource=#dataSourceFiles")
-       		.to("sql:SELECT * FROM movements_files WHERE file_date >= :#${header.initFileDate} AND file_date <= :#${header.endFileDate} AND financial_entity = :#${header.financialEntity}?dataSource=#dataSourceFiles")
+        	.to("sql:SELECT * FROM movements_files WHERE file_date >= CAST ( :#${header.initFileDate} AS DATE ) AND file_date <= CAST ( :#${header.endFileDate} AS DATE ) AND financial_entity = :#${header.financialEntity}?dataSource=#dataSourceFiles")
+       		//.to("sql:SELECT * FROM movements_files WHERE file_date >= :#${header.initFileDate} AND file_date <= :#${header.endFileDate} AND financial_entity = :#${header.financialEntity}?dataSource=#dataSourceFiles")
         		.log(LoggingLevel.INFO, logger , "| GetStateFileRoute | Message: respuesta bd : ${body}")
         	//Se arma la respuesta
         	.bean(ResponseHandler.class, "responseGetStateFile(${exchange})")
