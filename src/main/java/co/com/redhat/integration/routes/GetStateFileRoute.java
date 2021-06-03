@@ -56,8 +56,6 @@ public class GetStateFileRoute extends RouteBuilder {
         	.id("get-state-files")
         	.streamCaching("true")
         		.log(LoggingLevel.INFO, logger, " | GetStateFileRoute | Message: Inicia la ruta")
-        	//Se validan los campos de entrada segun las anotacion del objeto request
-        	.to("bean-validator://validatorFields")
         		.log(LoggingLevel.INFO, logger , " | GetStateFileRoute | Message: se invoca el select SQL con los valores initFileDate: ${header.initFileDate}, endFileDate: ${header.endFileDate} y financialEntity: ${header.financialEntity}")
         	//Se ejecuta la sentencia SQL
         	.to("sql:{{service.rest.select.file.state}}?dataSource=#dataSourceFiles")

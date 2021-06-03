@@ -37,9 +37,9 @@ data:
   service.rest.get.file.list.description: "Obtiene una lista de archivos"
   service.rest.health.uri: /health-check
   service.rest.health.description: "Health"
-  service.rest.select.file.list: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= :#initFileDate AND file_date <= :#endFileDate AND file_state='Finalizado'
-  service.rest.select.file.state: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= :#initFileDate AND file_date <= :#endFileDate AND financial_entity = :#financialEntity
-  service.rest.insert.movement.file: INSERT INTO MOVEMENTS_FILES VALUES(:#fileName, :#fileDate, :#fileState, :#financialEntity, :#target)
+  service.rest.select.file.list: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= CAST ( :#initFileDate AS DATE ) AND file_date <= CAST ( :#endFileDate AS DATE ) AND file_state='Finalizado'
+  service.rest.select.file.state: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= CAST ( :#initFileDate AS DATE ) AND file_date <= CAST ( :#endFileDate AS DATE ) AND financial_entity = :#financialEntity
+  service.rest.insert.movement.file: INSERT INTO MOVEMENTS_FILES VALUES(:#fileName, CAST ( :#fileDate AS DATE ), :#fileState, :#financialEntity, :#target)
   spring.datasource.initialize: 'true'
   spring.datasource.url: 'jdbc:postgresql://postgresql.ach-mft-integration.svc.cluster.local:5432/ach'
   spring.datasource.driverClassName: org.postgresql.Driver

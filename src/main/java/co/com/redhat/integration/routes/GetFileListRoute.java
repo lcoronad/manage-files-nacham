@@ -56,8 +56,6 @@ public class GetFileListRoute extends RouteBuilder {
         	.id("get-file-list")
         	.streamCaching("true")
         		.log(LoggingLevel.INFO, logger, " | GetFileListRoute | Message: Inicia la ruta")
-        	//Se validan los campos de entrada segun las anotacion del objeto request
-        	.to("bean-validator://validatorFields")
         		.log(LoggingLevel.INFO, logger , " | GetFileListRoute | Message: se invoca el select SQL con los valores initFileDate: ${header.initFileDate}, endFileDate: ${header.endFileDate}")
         	//Se ejecuta la sentencia SQL
         	.to("sql:{{service.rest.select.file.list}}?dataSource=#dataSourceFiles")
