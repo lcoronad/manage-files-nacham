@@ -55,8 +55,6 @@ public class ResponseHandler {
 		response.setCodigo("200");
 		response.setDescripcion("Ok");
 		
-		System.out.println(exchange.getIn().getBody().getClass());
-		
 		List<Map<String, String>> respuesta = (List) exchange.getIn().getBody();
 		SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
 		
@@ -89,8 +87,6 @@ public class ResponseHandler {
 		ResponseGetFileState response = new ResponseGetFileState();
 		response.setCodigo("200");
 		response.setDescripcion("Ok");
-		
-		System.out.println(exchange.getIn().getBody().getClass());
 		
 		List<Map<String, String>> respuesta = (List) exchange.getIn().getBody();
 		SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");

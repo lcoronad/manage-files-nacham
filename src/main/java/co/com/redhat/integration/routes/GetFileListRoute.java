@@ -5,14 +5,12 @@ import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.bean.validator.BeanValidationException;
-import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.stereotype.Component;
 
 import co.com.redhat.integration.beans.ResponseHandler;
-import co.com.redhat.integration.dto.RequestSaveMovementFile;
 
 /**
  * Ruta que procesa la consulta de listado de archivos.
@@ -35,11 +33,6 @@ public class GetFileListRoute extends RouteBuilder {
     @Autowired
     private CamelContext camelContext;
     
-    /**
-     * Crea el dataformat para el request
-     */
-    private JacksonDataFormat jsonDataFormat = new JacksonDataFormat(RequestSaveMovementFile.class);
-
     @Override
     public void configure() throws Exception {
         camelContext.setUseMDCLogging(Boolean.TRUE);
@@ -48,33 +41,31 @@ public class GetFileListRoute extends RouteBuilder {
         onException(BeanValidationException.class)
 	        .handled(true)
 	    	.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
-	        .log(LoggingLevel.ERROR, log, "| GetStateFileRoute | Error Field Validator: ${exception.message} \n \n")
+	        .log(LoggingLevel.ERROR, log, "| GetFileListRoute | Error Field Validator: ${exception.message} \n \n")
 	        .bean(ResponseHandler.class, "buildResponseValidation(${exception})");
         
         //Manejo de error de JDBC
         onException(CannotGetJdbcConnectionException.class)
 	        .handled(true)
 	    	.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
-	        .log(LoggingLevel.ERROR, log, "| GetStateFileRoute | Error: ${exception.message} \n \n")
+	        .log(LoggingLevel.ERROR, log, "| GetFileListRoute | Error: ${exception.message} \n \n")
 	        .bean(ResponseHandler.class, "buildResponseErrorDB(${exception})");
         
         //Inicio de la ruta de consulta de lista de archivos
         from("direct:get-file-list")
         	.id("get-file-list")
         	.streamCaching("true")
-        		.log(LoggingLevel.INFO, logger, " | GetStateFileRoute | Message: mensaje que llega ${body}")
-        	//Se convierte el request a JSON
-        	.marshal(jsonDataFormat)
-        		.log(LoggingLevel.INFO, logger, " | GetStateFileRoute | Message: Payload De Entrada: ${body}")
+        		.log(LoggingLevel.INFO, logger, " | GetFileListRoute | Message: Inicia la ruta")
         	//Se validan los campos de entrada segun las anotacion del objeto request
         	.to("bean-validator://validatorFields")
-        		.log(LoggingLevel.INFO, logger , " | GetStateFileRoute | Message: se invoca el select SQL con los valores initFileDate: ${header.initFileDate}, endFileDate: ${header.endFileDate}")
+        		.log(LoggingLevel.INFO, logger , " | GetFileListRoute | Message: se invoca el select SQL con los valores initFileDate: ${header.initFileDate}, endFileDate: ${header.endFileDate}")
         	//Se ejecuta la sentencia SQL
-        	.to("sql:SELECT * FROM movements_files WHERE file_date >= CAST ( :#${header.initFileDate} AS DATE ) AND file_date <= CAST ( :#${header.endFileDate} AS DATE ) AND file_state='{{service.rest.state.final.movements}}'?dataSource=#dataSourceFiles")
-        		.log(LoggingLevel.INFO, logger , "| GetStateFileRoute | Message: respuesta bd : ${body}")
+        	//.to("sql:SELECT * FROM movements_files WHERE file_date >= CAST ( :#${header.initFileDate} AS DATE ) AND file_date <= CAST ( :#${header.endFileDate} AS DATE ) AND file_state='{{service.rest.state.final.movements}}'?dataSource=#dataSourceFiles")
+        	.to("sql:SELECT * FROM movements_files WHERE file_date >= :#${header.initFileDate} AND file_date <= :#${header.endFileDate} AND file_state='{{service.rest.state.final.movements}}'?dataSource=#dataSourceFiles")
+        		.log(LoggingLevel.INFO, logger , "| GetFileListRoute | Message: respuesta bd : ${body}")
         	//Se arma la respuesta
         	.bean(ResponseHandler.class, "responseGetFileList(${exchange})")
-        		.log(LoggingLevel.INFO, logger , " | GetStateFileRoute | Message: Response : ${body}")
+        		.log(LoggingLevel.INFO, logger , " | GetFileListRoute | Message: Fin de la ruta")
         .end();
     }
 }

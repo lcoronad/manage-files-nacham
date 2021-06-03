@@ -5,14 +5,12 @@ import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.bean.validator.BeanValidationException;
-import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.stereotype.Component;
 
 import co.com.redhat.integration.beans.ResponseHandler;
-import co.com.redhat.integration.dto.RequestSaveMovementFile;
 
 /**
  * Ruta que procesa la consulta de estado de un archivo.
@@ -35,11 +33,6 @@ public class GetStateFileRoute extends RouteBuilder {
     @Autowired
     private CamelContext camelContext;
     
-    /**
-     * Crea el dataformat para el request
-     */
-    private JacksonDataFormat jsonDataFormat = new JacksonDataFormat(RequestSaveMovementFile.class);
-
     @Override
     public void configure() throws Exception {
         camelContext.setUseMDCLogging(Boolean.TRUE);
@@ -62,19 +55,17 @@ public class GetStateFileRoute extends RouteBuilder {
         from("direct:get-state-files")
         	.id("get-state-files")
         	.streamCaching("true")
-        		.log(LoggingLevel.INFO, logger, " | GetStateFileRoute | Message: mensaje que llega ${body}")
-        	//Se convierte el request a JSON
-        	.marshal(jsonDataFormat)
-        		.log(LoggingLevel.INFO, logger, " | GetStateFileRoute | Message: Payload De Entrada: ${body}")
+        		.log(LoggingLevel.INFO, logger, " | GetStateFileRoute | Message: Inicia la ruta")
         	//Se validan los campos de entrada segun las anotacion del objeto request
         	.to("bean-validator://validatorFields")
         		.log(LoggingLevel.INFO, logger , " | GetStateFileRoute | Message: se invoca el select SQL con los valores initFileDate: ${header.initFileDate}, endFileDate: ${header.endFileDate} y financialEntity: ${header.financialEntity}")
         	//Se ejecuta la sentencia SQL
-        	.to("sql:SELECT * FROM movements_files WHERE file_date >= CAST ( :#${header.initFileDate} AS DATE ) AND file_date <= CAST ( :#${header.endFileDate} AS DATE ) AND financial_entity = :#${header.financialEntity}?dataSource=#dataSourceFiles")
+        	//.to("sql:SELECT * FROM movements_files WHERE file_date >= CAST ( :#${header.initFileDate} AS DATE ) AND file_date <= CAST ( :#${header.endFileDate} AS DATE ) AND financial_entity = :#${header.financialEntity}?dataSource=#dataSourceFiles")
+       		.to("sql:SELECT * FROM movements_files WHERE file_date >= :#${header.initFileDate} AND file_date <= :#${header.endFileDate} AND financial_entity = :#${header.financialEntity}?dataSource=#dataSourceFiles")
         		.log(LoggingLevel.INFO, logger , "| GetStateFileRoute | Message: respuesta bd : ${body}")
         	//Se arma la respuesta
         	.bean(ResponseHandler.class, "responseGetStateFile(${exchange})")
-        		.log(LoggingLevel.INFO, logger , " | GetStateFileRoute | Message: Response : ${body}")
+        		.log(LoggingLevel.INFO, logger , " | GetStateFileRoute | Message: Fin de la ruta")
         .end();
     }
 }
