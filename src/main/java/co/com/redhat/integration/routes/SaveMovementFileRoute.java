@@ -70,7 +70,7 @@ public class SaveMovementFileRoute extends RouteBuilder {
         	.unmarshal(jsonDataFormat)
         	//Se validan los campos de entrada segun las anotacion del objeto request
         	.to("bean-validator://validatorFields")
-        		.log(LoggingLevel.INFO, logger , "| SaveMovementFileRoute | Message: se invoca el insert SQL con los valores fileName: ${body.fileName}, fileDate: ${body.fileDate}, fileState: ${body.fileState}, financialEntity: ${body.financialEntity} y target: ${body.target}")
+        		.log(LoggingLevel.INFO, logger , "| SaveMovementFileRoute | Message: se invoca el insert SQL con los valores fileName: ${body.fileName}, fileDate: ${body.fileDate}, fileState: ${body.fileState}, financialEntity: ${body.financialEntity}, target: ${body.target} y errorDescription: ${body.errorDescription}")
         	//Se crean los headers para el insert parametrizado
         	.setHeader("fileName")
         		.simple("${body.fileName}")
@@ -82,6 +82,8 @@ public class SaveMovementFileRoute extends RouteBuilder {
         		.simple("${body.financialEntity}")
         	.setHeader("target")
         		.simple("${body.target}")
+        	.setHeader("errorDescription")
+        		.simple("${body.errorDescription}")
         	//Se ejecuta la sentencia SQL
         	.to("sql:{{service.rest.insert.movement.file}}?dataSource=#dataSourceFiles")
         		.log(LoggingLevel.INFO, logger , "| SaveMovementFileRoute | Message: respuesta bd : ${body}")

@@ -35,11 +35,14 @@ data:
   service.rest.get.state.description: "Obtiene el estado de un archivo"
   service.rest.get.file.list.uri: /get-file-list/{initFileDate}/{endFileDate}
   service.rest.get.file.list.description: "Obtiene una lista de archivos"
+  service.rest.get.file.list.error.uri: /get-file-list-error/{initFileDate}/{endFileDate}
+  service.rest.get.file.list.error.description: "Obtiene una lista de archivos con error"
   service.rest.health.uri: /health-check
   service.rest.health.description: "Health"
-  service.rest.select.file.list: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= CAST ( :#initFileDate AS DATE ) AND file_date <= CAST ( :#endFileDate AS DATE ) AND file_state='Finalizado'
-  service.rest.select.file.state: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= CAST ( :#initFileDate AS DATE ) AND file_date <= CAST ( :#endFileDate AS DATE ) AND financial_entity = :#financialEntity
-  service.rest.insert.movement.file: INSERT INTO MOVEMENTS_FILES VALUES(:#fileName, CAST ( :#fileDate AS DATE ), :#fileState, :#financialEntity, :#target)
+  service.rest.select.file.list: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= CAST ( :#initFileDate AS DATE ) AND file_date <= CAST ( :#endFileDate AS DATE ) AND file_state='Finalizado' ORDER BY FILE_DATE DESC
+  service.rest.select.file.list.error: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= CAST ( :#initFileDate AS DATE ) AND file_date <= CAST ( :#endFileDate AS DATE ) AND file_state='Error'  ORDER BY FILE_DATE DESC
+  service.rest.select.file.state: SELECT * FROM MOVEMENTS_FILES WHERE FILE_DATE >= CAST ( :#initFileDate AS DATE ) AND file_date <= CAST ( :#endFileDate AS DATE ) AND financial_entity = :#financialEntity  ORDER BY FILE_DATE DESC
+  service.rest.insert.movement.file: INSERT INTO MOVEMENTS_FILES VALUES(:#fileName, CAST ( :#fileDate AS DATE ), :#fileState, :#financialEntity, :#target, :#errorDescription)
   spring.datasource.initialize: 'true'
   spring.datasource.url: 'jdbc:postgresql://postgresql.ach-mft-integration.svc.cluster.local:5432/ach'
   spring.datasource.driverClassName: org.postgresql.Driver

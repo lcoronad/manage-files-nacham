@@ -67,6 +67,7 @@ public class ResponseHandler {
 				movementFile.setFileState(registro.get("FILE_STATE"));
 				movementFile.setFinancialEntity(registro.get("FINANCIAL_ENTITY"));
 				movementFile.setTarget(registro.get("TARGET"));
+				movementFile.setErrorDescription(registro.get("ERROR_DESCRIPTION"));
 				
 				movements.add(movementFile);
 			}
@@ -104,6 +105,7 @@ public class ResponseHandler {
 				movementFile.setFileState(registro.get("FILE_STATE"));
 				movementFile.setFinancialEntity(registro.get("FINANCIAL_ENTITY"));
 				movementFile.setTarget(registro.get("TARGET"));
+				movementFile.setErrorDescription(registro.get("ERROR_DESCRIPTION"));
 				
 				movements.add(movementFile);
 			}

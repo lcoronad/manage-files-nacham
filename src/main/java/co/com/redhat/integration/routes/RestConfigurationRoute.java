@@ -56,7 +56,7 @@ public class RestConfigurationRoute extends RouteBuilder {
                 .message("All users successfully created")
             .endResponseMessage()
             .to("direct:save-movement-file")
-        //Se expone el endpoint get para la consulta de estado
+        //Se expone el endpoint get para la consulta de estado por fecha y entidad financiera
         .get(env.getProperty("service.rest.get.state.uri"))
            .description(env.getProperty("service.rest.get.state.description"))
            .param()
@@ -82,7 +82,7 @@ public class RestConfigurationRoute extends RouteBuilder {
                .message("Get file state OK")
            .endResponseMessage()
            .to("direct:get-state-files")
-        //Se expone el endpoint get para la consulta de estado
+        //Se expone el endpoint get para la consulta la lista de archivos procesados
         .get(env.getProperty("service.rest.get.file.list.uri"))
            .description(env.getProperty("service.rest.get.file.list.description"))
            .param()
@@ -102,6 +102,26 @@ public class RestConfigurationRoute extends RouteBuilder {
               .message("Get file list OK")
           .endResponseMessage()
           .to("direct:get-file-list")
+        //Se expone el endpoint get para la consulta de archivos con error
+        .get(env.getProperty("service.rest.get.file.list.error.uri"))
+          .description(env.getProperty("service.rest.get.file.list.error.description"))
+          .param()
+ 	   		 .name("initFileDate")
+	         .type(RestParamType.path)
+	         .required(true)
+	         .description("Initial File Date")
+         .endParam()
+         .param()
+ 			.name("endFileDate")
+	        .type(RestParamType.path)
+	        .required(true)
+	        .description("End File Date")
+         .endParam()
+         .responseMessage()
+             .code(200)
+             .message("Get file list error OK")
+         .endResponseMessage()
+         .to("direct:get-file-list-error")
         //Se expone el endpoint get para el health check
         .get(env.getProperty("service.rest.health.uri"))
             .description(env.getProperty("service.rest.health.description"))

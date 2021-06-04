@@ -29,7 +29,6 @@ public class RequestSaveMovementFile {
     
     @JsonProperty
     @JsonFormat(pattern = "yyyy-MM-dd")
-    //@NotEmpty(message = "La fecha no puede ser vacia")
     private String fileDate;
 
     @JsonProperty
@@ -37,12 +36,14 @@ public class RequestSaveMovementFile {
     private String fileState;
     
     @JsonProperty
-    @NotEmpty(message = "La entidad financiera no puede ser vacia")
     private String financialEntity;
     
     @JsonProperty
     @NotEmpty(message = "El destino no puede ser vacio")
     private String target;
+    
+    @JsonProperty
+    private String errorDescription;
 
 	public String getFileName() {
 		return fileName;
@@ -82,5 +83,13 @@ public class RequestSaveMovementFile {
 
 	public void setTarget(String target) {
 		this.target = target;
+	}
+
+	public String getErrorDescription() {
+		return errorDescription;
+	}
+
+	public void setErrorDescription(String errorDescription) {
+		this.errorDescription = errorDescription;
 	}
 }
